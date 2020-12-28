@@ -39,6 +39,8 @@ public class HrTest {
     }
     @Test
     public void test1(){
+
         System.out.println("XXX测试是否能运行");
+        System.out.println("有一次测试GIT");
     }
 }
