@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--mybatis主配置文件-->
+<configuration>
+
+    <!--设置项-->
+    <settings>
+        <!--开启驼峰命名法自动映射-->
+        <!--自动将带下划线的数据库列名映射成驼峰命名法属性名-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--开启日志输出-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+
+    <!--别名定义-->
+    <typeAliases>
+        <typeAlias type="com.obtk.entity.Emp" alias="Emp"/>
+        <typeAlias type="com.obtk.entity.Dept" alias="Dept"/>
+    </typeAliases>
+
+    <!--连接环境配置-->
+    <environments default="env1">
+        <environment id="env1">
+            <!--配置事务管理器:默认使用jdbc事务管理方式-->
+            <transactionManager type="JDBC"></transactionManager>
+            <!--数据源配置:使用默认数据库连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/test0308?serverTimezone=Asia/Shanghai&amp;useSSL=false&amp;characterEncoding=utf8"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--定义映射器-->
+    <mappers>
+        <mapper class="com.obtk.mapper.DeptMapper"/>
+        <mapper class="com.obtk.mapper.EmpMapper"/>
+        <mapper resource="mapper/EmpMapper.xml"/>
+    </mappers>
+	
+</configuration>

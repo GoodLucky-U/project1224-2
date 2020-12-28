@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style media="screen">
+* {
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	padding: 1em 0;
+	text-align: center;
+	background-color: #4a4;
+	color: #fff;
+	font-size: 300%;
+}
+
+header span {
+	font-size: 50%;
+	margin-left: 1em;
+	color: #eee;
+}
+
+footer {
+	position: absolute;
+	bottom: 0;
+	padding: 2em 0;
+	text-align: center;
+	background-color: #4a4;
+	color: #fff;
+	width: 100%;
+	clear: both;
+}
+
+.content {
+	width: 75%;
+	overflow: auto;
+	float: right;
+	min-height: 300px;
+}
+
+.nav {
+	float: left;
+	background-color: #eee;
+	width: 25%;
+	position: fixed;
+	height: 100%;
+	overflow: auto;
+}
+
+ul {
+	list-style-type: none;
+	margin-top: 1em;
+}
+
+li a {
+	display: block;
+	color: #000;
+	padding: 8px 0 8px 16px;
+	text-decoration: none;
+}
+
+li a:hover {
+	background-color: #4a4;
+	color: white;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 2em auto;
+}
+
+th, td {
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f200;
+}
+</style>
+<title></title>
+</head>
+
+<body>
+	<header>
+		人力资源管理<span>员工信息列表</span>
+	</header>
+	<div class="nav">
+		<ul>
+			<li><a href="new.html">添加员工</a></li>
+			<li><a href="#">部门信息</a></li>
+			<li><a href="#">其他</a></li>
+		</ul>
+	</div>
+	<div class="content">
+		<table>
+			<thead>
+			<tr>
+				<th>编号</th>
+				<th>姓名</th>
+				<th>部门</th>
+				<th>职位</th>
+				<th>入职日期</th>
+				<th>工资</th>
+				<th>编辑</th>
+				<th>删除</th>
+			</tr>
+			</thead>
+			<tbody id="emps">
+
+			</tbody>
+		</table>
+		<nav >
+			<span id="pageMsg"></span>
+			<span id="pageNos"></span>
+		</nav>
+	</div>
+	<footer>Copyright  All Rights Reserved.</footer>
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script>
+		$(function () {
+			$.ajax({
+				url:"emp",
+				dataType:"json",
+				success:function (data) {
+				    $("#emps").empty();
+					data.data.forEach(emp=>{
+					    let $tr=$(`<tr>
+							<td>${emp.empno}</td>
+							<td>${emp.ename}</td>
+							<td>${emp.dept.dname}</td>
+							<td>${emp.job}</td>
+							<td>${emp.hiredate}</td>
+							<td>${emp.sal}</td>
+							<td><button onclick="edit(${emp.empno})">编辑</button></td>
+							<td><button>删除</button></td>
+							</tr>`);
+					    $("#emps").append($tr);
+					});
+					$("#pageMsg").text(`总共${data.total}页，当前第${data.pageNo}页`);
+
+					for(let i=1;i<=data.total;i++){
+					    let $a=$(`<a style="margin-left:5px">${i}</a>`);
+					    if(i!=data.pageNo){
+					        $a.attr("href",`javascript:findPage(${i})`);
+						}
+						$("#pageNos").append($a);
+					}
+                }
+			})
+        });
+		//按页号发ajax请求
+		function findPage(pageNo) {
+            $.ajax({
+                url:"emp",
+				data:{pageNo:pageNo},//传页号参数到servlet
+                dataType:"json",
+                success:function (data) {
+                    $("#emps").empty();
+                    data.data.forEach(emp=>{
+                        let $tr=$(`<tr>
+							<td>${emp.empno}</td>
+							<td>${emp.ename}</td>
+							<td>${emp.dept.dname}</td>
+							<td>${emp.job}</td>
+							<td>${emp.hiredate}</td>
+							<td>${emp.sal}</td>
+							<td><button onclick="edit(${emp.empno})">编辑</button></td>
+							<td><button>删除</button></td>
+							</tr>`);
+                        $("#emps").append($tr);
+                    });
+                    $("#pageMsg").text(`总共${data.total}页，当前第${data.pageNo}页`);
+                    $("#pageNos").empty();//清空页号栏
+                    for(let i=1;i<=data.total;i++){
+                        let $a=$(`<a style="margin-left:5px">${i}</a>`);
+                        if(i!=data.pageNo){
+                            $a.attr("href",`javascript:findPage(${i})`);
+                        }
+                        $("#pageNos").append($a);
+                    }
+                }
+            })
+        }
+
+        function edit(empno) {
+		    //用浏览器本地存储员工编号
+			sessionStorage.setItem("empno",empno);
+			location.href="edit.html"
+        }
+	</script>
+</body>
+</html>

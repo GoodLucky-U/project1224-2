@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.obtk.mapper.EmpMapper">
+
+
+    <resultMap id="emp1" type="Emp">
+        <id property="empno" column="empno"/>
+        <result property="ename" column="ename"/>
+        <result property="sal" column="sal"/>
+        <result property="hiredate" column="hiredate"/>
+        <result property="job" column="job"/>
+        <association property="dept" javaType="Dept">
+            <id property="deptNo" column="deptno"/>
+            <result property="dname" column="dname"/>
+        </association>
+    </resultMap>
+
+    <select id="findByPage" resultMap="emp1">
+        <bind name="start" value="(pageNo-1)*pageSize"/>
+        select empno,ename,sal,hiredate,job,e.deptno,dname
+           from emp e left join dept d on e.deptno=d.deptno
+           order by empno limit #{start},#{pageSize}
+    </select>
+
+</mapper>  
